@@ -17,27 +17,26 @@ security:
             pattern: ^/api/login$
             security: false
         web_login:
-            pattern: $/api/login$
+            pattern: ^/web/login$
+            security: false
+        web_sync:
+            pattern: ^/web/sync-users$
             security: false
         web:
             pattern: ^/web/
             stateless: false
             custom_authenticators:
                 - App\Infrastructure\Security\WebSessionAuthenticator
-        web_sync:
-            pattern: ^/web/sync-users$
-            security: false
         api:
-            pattern: ^/
+            pattern: ^/api
             stateless: true
             custom_authenticators:
                 - App\Infrastructure\Security\ApiTokenAuthenticator
         graphql:
-            pattern: $/graphql
+            pattern: ^/graphql
             stateless: true
             custom_authenticators:
                 - App\Infrastructure\Security\ApiTokenAuthenticator
-
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -50,10 +49,10 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/web/login, roles: PUBLIC_ACCESS }
-        - { path: ^/web/, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/web/sync-users, roles: PUBLIC_ACCESS }
         - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/graphql, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/web/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

@@ -116,13 +116,16 @@ class WebController extends AbstractController
     }
 
     #[Route('/web/sync-users', name: 'web_sync_users', methods: ['GET'])]
-    public function syncUsers(): Response
+    public function syncUsers(Request $request): Response
     {
         $envelope = $this->messageBus->dispatch(new SyncUsersFromApiCommand());
         $synced = $envelope->last(HandledStamp::class)->getResult();
 
-        $this->addFlash('success', sprintf('Synced %d users from JSONPlaceholder.', $synced));
+        if ($request->getSession()->has('api_token')) {
+            $this->addFlash('success', sprintf('Synced %d users from JSONPlaceholder.', $synced));
 
-        return new RedirectResponse('/web/dashboard');
+            return new RedirectResponse('/web/dashboard');
+        }
+        return new RedirectResponse('/web/login');
     }
 }
