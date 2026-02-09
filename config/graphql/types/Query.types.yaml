@@ -1,0 +1,28 @@
+Query:
+    type: object
+    config:
+        fields:
+            tasks:
+                type: "[Task]"
+                resolve: "@=service('App\\\\Infrastructure\\\\GraphQL\\\\Resolver\\\\TaskResolver').allTasks()"
+            userTasks:
+                type: "[Task]"
+                args:
+                    userId:
+                        type: "String!"
+                resolve: "@=service('App\\\\Infrastructure\\\\GraphQL\\\\Resolver\\\\TaskResolver').userTasks(args['userId'])"
+            task:
+                type: "Task"
+                args:
+                    id:
+                        type: "String!"
+                resolve: "@=service('App\\\\Infrastructure\\\\GraphQL\\\\Resolver\\\\TaskResolver').task(args['id'])"
+            taskHistory:
+                type: "[TaskEvent]"
+                args:
+                    taskId:
+                        type: "String!"
+                resolve: "@=service('App\\\\Infrastructure\\\\GraphQL\\\\Resolver\\\\TaskResolver').taskHistory(args['taskId'])"
+            users:
+                type: "[User]"
+                resolve: "@=service('App\\\\Infrastructure\\\\GraphQL\\\\Resolver\\\\UserResolver').allUsers()"

@@ -1,0 +1,25 @@
+Mutation:
+    type: object
+    config:
+        fields:
+            createTask:
+                type: "Task"
+                args:
+                    title:
+                        type: "String!"
+                    description:
+                        type: "String!"
+                    assignedUserId:
+                        type: "String!"
+                resolve: "@=service('App\\\\Infrastructure\\\\GraphQL\\\\Mutation\\\\TaskMutation').createTask(args['title'], args['description'], args['assignedUserId'])"
+            changeTaskStatus:
+                type: "Boolean"
+                args:
+                    taskId:
+                        type: "String!"
+                    newStatus:
+                        type: "String!"
+                resolve: "@=service('App\\\\Infrastructure\\\\GraphQL\\\\Mutation\\\\TaskMutation').changeTaskStatus(args['taskId'], args['newStatus'])"
+            syncUsers:
+                type: "Int"
+                resolve: "@=service('App\\\\Infrastructure\\\\GraphQL\\\\Mutation\\\\UserMutation').syncUsers()"
