@@ -24,7 +24,7 @@ class DefaultTaskStatusTransitionStrategyTest extends TestCase
 
     public function testCannotTransitionFromTodoToDone(): void
     {
-        $this->assertTrue($this->strategy->canTransition(TaskStatus::TODO, TaskStatus::DONE));
+        $this->assertFalse($this->strategy->canTransition(TaskStatus::TODO, TaskStatus::DONE));
     }
 
     public function testCanTransitionFromInProgressToDone(): void
