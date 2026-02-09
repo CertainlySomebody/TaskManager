@@ -43,7 +43,7 @@ class Task
         $this->status = $taskStatus->value;
         $this->assignedUserId = $userId->getValue();
         $this->createdAt = $createdAt ?? new \DateTimeImmutable();
-        $this->updatedAt = $createdAt;
+        $this->updatedAt = $this->createdAt;
     }
 
     /**
