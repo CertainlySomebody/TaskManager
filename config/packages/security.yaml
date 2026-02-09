@@ -16,8 +16,24 @@ security:
         login:
             pattern: ^/api/login$
             security: false
+        web_login:
+            pattern: $/api/login$
+            security: false
+        web:
+            pattern: ^/web/
+            stateless: false
+            custom_authenticators:
+                - App\Infrastructure\Security\WebSessionAuthenticator
+        web_sync:
+            pattern: ^/web/sync-users$
+            security: false
         api:
             pattern: ^/
+            stateless: true
+            custom_authenticators:
+                - App\Infrastructure\Security\ApiTokenAuthenticator
+        graphql:
+            pattern: $/graphql
             stateless: true
             custom_authenticators:
                 - App\Infrastructure\Security\ApiTokenAuthenticator
@@ -33,7 +49,11 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/web/login, roles: PUBLIC_ACCESS }
+        - { path: ^/web/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/web/sync-users, roles: PUBLIC_ACCESS }
+        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/graphql, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

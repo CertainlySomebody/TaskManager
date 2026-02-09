@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+  {% block title %}Dashboard - TaskManager{% endblock %}
+
+  {% block navbar %}
+      <nav class="navbar navbar-dark bg-dark">
+          <div class="container">
+              <span class="navbar-brand">TaskManager</span>
+              <div class="d-flex align-items-center">
+              <span class="text-light me-3">{{ currentUser.name }} ({{ currentUser.email
+                  }})</span>
+                  <a href="/web/sync-users" class="btn btn-outline-info btn-sm me-2">Sync
+                      Users</a>
+                  <a href="/web/logout" class="btn btn-outline-light btn-sm">Logout</a>
+              </div>
+          </div>
+      </nav>
+  {% endblock %}
+
+  {% block body %}
+      <div class="row">
+          <!-- Create Task Form -->
+          <div class="col-md-4">
+              <div class="card mb-4">
+                  <div class="card-header">
+                      <h5>Create Task</h5>
+                  </div>
+                  <div class="card-body">
+                      <form method="post" action="/web/task/create">
+                          <div class="mb-3">
+                              <label for="title" class="form-label">Title</label>
+                              <input type="text" class="form-control" id="title" name="title"
+                                     required>
+                          </div>
+                          <div class="mb-3">
+                              <label for="description" class="form-label">Description</label>
+                              <textarea class="form-control" id="description"
+                                        name="description" rows="3" required></textarea>
+                          </div>
+                          <div class="mb-3">
+                              <label for="assignedUserId" class="form-label">Assign
+                                  to</label>
+                              <select class="form-select" id="assignedUserId"
+                                      name="assignedUserId" required>
+                                  {% for user in users %}
+                                      <option value="{{ user.getId().getValue() }}">{{
+                                          user.name }} ({{ user.email }})</option>
+                                  {% endfor %}
+                              </select>
+                          </div>
+                          <button type="submit" class="btn btn-success w-100">Create
+                              Task</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Tasks List -->
+          <div class="col-md-8">
+              <h5>All Tasks ({{ tasks|length }})</h5>
+              <table class="table table-striped">
+                  <thead>
+                  <tr>
+                      <th>Title</th>
+                      <th>Status</th>
+                      <th>Assigned To</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for task in tasks %}
+                      <tr>
+                          <td>
+                              <strong>{{ task.title }}</strong>
+                              <br><small class="text-muted">{{ task.description|slice(0, 50)
+                                  }}{% if task.description|length > 50 %}...{% endif %}</small>
+                          </td>
+                          <td>
+                              {% if task.getStatus().value == 'todo' %}
+                                  <span class="badge bg-secondary">To Do</span>
+                              {% elseif task.getStatus().value == 'in_progress' %}
+                                  <span class="badge bg-primary">In Progress</span>
+                              {% elseif task.getStatus().value == 'done' %}
+                                  <span class="badge bg-success">Done</span>
+                              {% endif %}
+                          </td>
+                          <td>{{ task.getAssignedUserId().getValue()|slice(0, 8) }}...</td>
+                          <td>{{ task.getCreatedAt()|date('Y-m-d H:i') }}</td>
+                          <td>
+                              <!-- Status Change -->
+                              {% if task.getStatus().value == 'todo' %}
+                                  <form method="post" action="/web/task/{{
+                                  task.getId().getValue() }}/status" class="d-inline">
+                                      <input type="hidden" name="status" value="in_progress">
+                                      <button type="submit" class="btn btn-primary
+  btn-sm">Start</button>
+                                  </form>
+                              {% elseif task.getStatus().value == 'in_progress' %}
+                                  <form method="post" action="/web/task/{{
+                                  task.getId().getValue() }}/status" class="d-inline">
+                                      <input type="hidden" name="status" value="done">
+                                      <button type="submit" class="btn btn-success
+  btn-sm">Done</button>
+                                  </form>
+                                  <form method="post" action="/web/task/{{
+                                  task.getId().getValue() }}/status" class="d-inline">
+                                      <input type="hidden" name="status" value="todo">
+                                      <button type="submit" class="btn btn-warning
+  btn-sm">Back</button>
+                                  </form>
+                              {% endif %}
+
+                              <!-- History -->
+                              <a href="/web/task/{{ task.getId().getValue() }}/history"
+                                 class="btn btn-outline-secondary btn-sm">History</a>
+                          </td>
+                      </tr>
+                  {% else %}
+                      <tr>
+                          <td colspan="5" class="text-center text-muted">No tasks yet. Create
+                              one!</td>
+                      </tr>
+                  {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  {% endblock %}

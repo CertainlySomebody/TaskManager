@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+  {% block title %}Task History - TaskManager{% endblock %}
+
+  {% block navbar %}
+      <nav class="navbar navbar-dark bg-dark">
+          <div class="container">
+              <span class="navbar-brand">TaskManager</span>
+              <a href="/web/dashboard" class="btn btn-outline-light btn-sm">Back to
+                  Dashboard</a>
+          </div>
+      </nav>
+  {% endblock %}
+
+  {% block body %}
+      <h4>History: {{ task.title }}</h4>
+      <p class="text-muted">Task ID: {{ task.getId().getValue() }}</p>
+
+      <table class="table table-striped">
+          <thead>
+          <tr>
+              <th>#</th>
+              <th>Event Type</th>
+              <th>Payload</th>
+              <th>Occurred At</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for event in events %}
+              <tr>
+                  <td>{{ event.id }}</td>
+                  <td>
+                      {% if event.eventType == 'task_created' %}
+                          <span class="badge bg-info">Created</span>
+                      {% elseif event.eventType == 'task_status_updated' %}
+                          <span class="badge bg-warning">Status Changed</span>
+                      {% else %}
+                          <span class="badge bg-secondary">{{ event.eventType }}</span>
+                      {% endif %}
+                  </td>
+                  <td><code>{{ event.getPayload()|json_encode }}</code></td>
+                  <td>{{ event.getOccurredAt()|date('Y-m-d H:i:s') }}</td>
+              </tr>
+          {% else %}
+              <tr>
+                  <td colspan="4" class="text-center text-muted">No events recorded.</td>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+  {% endblock %}
