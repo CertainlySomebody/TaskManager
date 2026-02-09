@@ -10,7 +10,7 @@ use App\Infrastructure\Persistence\Doctrine\Repository\TaskEventStoreRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class TaskEventSubscriber
+class TaskCreatedEventHandler
 {
     public function __construct(
         private TaskEventStoreRepository $eventStoreRepository,
