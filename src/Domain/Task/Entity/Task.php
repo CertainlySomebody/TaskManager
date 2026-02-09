@@ -7,19 +7,41 @@ namespace App\Domain\Task\Entity;
 use App\Domain\Task\ValueObject\TaskId;
 use App\Domain\Task\ValueObject\TaskStatus;
 use App\Domain\User\ValueObject\UserId;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'tasks')]
 class Task
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'string', length: 36)]
+    private string $id;
+    #[ORM\Column(type: 'string', length: 20)]
+    private string $status;
+    #[ORM\Column(name: 'assigned_user_id', type: 'string', length: 36)]
+    private string $assignedUserId;
     public function __construct(
-        private TaskId $id,
+        TaskId $taskId,
+
+        #[ORM\Column(type: 'string', length: 255)]
         private string $title,
+
+        #[ORM\Column(type: 'text')]
         private string $description,
-        private TaskStatus $status,
-        private UserId $assignedUserId,
+
+        TaskStatus $taskStatus,
+        UserId $userId,
+
+        #[ORM\Column(name: 'created_at', type: 'datetime_immutable')]
         private ?\DateTimeImmutable $createdAt = null,
+
+        #[ORM\Column(name: 'updated_at', type: 'datetime_immutable')]
         private ?\DateTimeImmutable $updatedAt = null,
     )
     {
+        $this->id = $taskId->getValue();
+        $this->status = $taskStatus->value;
+        $this->assignedUserId = $userId->getValue();
         $this->createdAt = $createdAt ?? new \DateTimeImmutable();
         $this->updatedAt = $createdAt;
     }
@@ -29,7 +51,7 @@ class Task
      */
     public function getId(): TaskId
     {
-        return $this->id;
+        return new TaskId($this->id);
     }
 
     /**
@@ -53,7 +75,7 @@ class Task
      */
     public function getStatus(): TaskStatus
     {
-        return $this->status;
+        return TaskStatus::from($this->status);
     }
 
     /**
@@ -61,7 +83,7 @@ class Task
      */
     public function getAssignedUserId(): UserId
     {
-        return $this->assignedUserId;
+        return new UserId($this->assignedUserId);
     }
 
     /**
@@ -82,7 +104,7 @@ class Task
 
     public function changeStatus(TaskStatus $newStatus): void
     {
-        $this->status = $newStatus;
+        $this->status = $newStatus->value;
         $this->updatedAt = new \DateTimeImmutable();
     }
 }
