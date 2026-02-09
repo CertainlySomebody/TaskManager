@@ -22,6 +22,8 @@
         "symfony/uid": "8.0.*",
         "symfony/yaml": "8.0.*"
     },
+    "require-dev": {
+    },
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
