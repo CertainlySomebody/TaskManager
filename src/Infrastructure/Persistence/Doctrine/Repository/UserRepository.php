@@ -43,4 +43,10 @@ class UserRepository implements UserRepositoryInterface
     {
         return $this->entityManager->getRepository(User::class)->findAll();
     }
+
+    public function findByApiToken(string $token): ?User
+    {
+        return $this->entityManager->getRepository(User::class)
+            ->findOneBy(['apiToken' => $token]);
+    }
 }

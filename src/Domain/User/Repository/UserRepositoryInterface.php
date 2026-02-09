@@ -16,4 +16,5 @@ interface UserRepositoryInterface
 
     /** @return User[] */
     public function findAll(): array;
+    public function findByApiToken(string $token): ?User;
 }

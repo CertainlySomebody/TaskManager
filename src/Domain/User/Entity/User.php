@@ -32,7 +32,10 @@ class User
         private array $roles,
 
         #[ORM\Column(name: 'external_id', type: 'integer', unique: true, nullable: true)]
-        private ?int $externalId
+        private ?int $externalId,
+
+        #[ORM\Column(name: 'api_token', type: 'string', length: 64, nullable: true, unique: true)]
+        private ?string $apiToken = null
     ) {
         $this->id = $userId->getValue();
     }
@@ -75,5 +78,15 @@ class User
     public function hasRole(string $role): bool
     {
         return in_array($role, $this->roles, true);
+    }
+
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(?string $apiToken): void
+    {
+        $this->apiToken = $apiToken;
     }
 }
